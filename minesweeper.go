@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"strconv"
-//	"strings"
+	"bufio"
+	"os"
+	"strings"
 )
 
 type Square struct {
@@ -115,26 +117,44 @@ func main() {
 	fmt.Println("Welcome to Minesweeper")
 
 	createBoard(numRows, numCols)
+	var coordinates[] string
+
+	var foundBomb = false
+	showBoard(foundBomb)
+
+	fmt.Println("Type in x,y coordinates between 0-5. Type Q to quit")
+	fmt.Println("For some reason I need an extra comma at the end??!?")
+
+	var keepPlaying bool = true
+	for keepPlaying {
+		reader := bufio.NewReader(os.Stdin)
+		text, _ := reader.ReadString('\n')
+		text = strings.Replace(text, "\n", "", -1)
+
+
+		if strings.Contains(text,"Q") {
+			keepPlaying = false
+		} else {
+			coordinates = strings.Split(text,",")
+			x, err := strconv.Atoi(coordinates[0])
+			if err != nil{
+				println(err)
+			}
+			y, err := strconv.Atoi(coordinates[1])
+			if err != nil{
+				println(err)
+			}
+			foundBomb = pickSquare(x,y)
+			showBoard(foundBomb)
+		}
+
+		if foundBomb {
+			keepPlaying = false
+		}
+
+		//fmt.Println(text)
+	}
+
 	
-	showBoard(false)
-
-	var foundBomb = pickSquare(1,0)
-	showBoard(foundBomb)
-
-	foundBomb = pickSquare(3,2)
-	showBoard(foundBomb)
-
-	foundBomb = pickSquare(3,4)
-	showBoard(foundBomb)
-
-	foundBomb = pickSquare(1,4)
-	showBoard(foundBomb)
-
-
-	foundBomb = pickSquare(0,2)
-	showBoard(foundBomb)
-
-	foundBomb = pickSquare(4,2)
-	showBoard(foundBomb)
 
 }
